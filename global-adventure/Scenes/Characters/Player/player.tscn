@@ -1,0 +1,156 @@
+[gd_scene load_steps=21 format=3 uid="uid://cltk85i5pi00s"]
+
+[ext_resource type="Script" uid="uid://e5w83rgw18d7" path="res://Scripts/Player.cs" id="1_lyjr2"]
+[ext_resource type="Texture2D" uid="uid://df2gtqs5q2ukr" path="res://Assets/Actor/Characters/Caveman/SeparateAnim/Walk.png" id="2_lyjr2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aencf"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rtkie"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c5nky"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xcbxy"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_siygm"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qqvsf"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(32, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_apx8m"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fu1fx"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(32, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dxcao"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1mdwi"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(48, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8gg06"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cscr0"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(48, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lyjr2"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_plevq"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(16, 16, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sdxbo"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p06rw"]
+atlas = ExtResource("2_lyjr2")
+region = Rect2(16, 48, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_plevq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aencf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rtkie")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c5nky")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xcbxy")
+}],
+"loop": true,
+"name": &"move_down",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_siygm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qqvsf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_apx8m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fu1fx")
+}],
+"loop": true,
+"name": &"move_left",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dxcao")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1mdwi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8gg06")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cscr0")
+}],
+"loop": true,
+"name": &"move_right",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lyjr2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_plevq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sdxbo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p06rw")
+}],
+"loop": true,
+"name": &"move_up",
+"speed": 6.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lyjr2"]
+radius = 6.0
+height = 16.0
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_lyjr2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_plevq")
+animation = &"move_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_lyjr2")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(5, 5)
