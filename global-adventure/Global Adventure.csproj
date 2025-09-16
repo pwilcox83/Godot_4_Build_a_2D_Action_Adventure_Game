@@ -6,5 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Scenes\" />
+    <Folder Include="Scenes\GameScenes\" />
   </ItemGroup>
 </Project>

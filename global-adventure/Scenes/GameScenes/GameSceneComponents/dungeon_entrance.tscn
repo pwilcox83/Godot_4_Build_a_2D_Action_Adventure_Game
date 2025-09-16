@@ -1,0 +1,39 @@
+[gd_scene load_steps=4 format=3 uid="uid://3ve4wlvbdvt3"]
+
+[ext_resource type="Texture2D" uid="uid://otsgbh81w8h0" path="res://Assets/Backgrounds/Tilesets/TilesetReliefDetail.png" id="2_blbf1"]
+[ext_resource type="Script" uid="uid://d2okr0dr1y8qv" path="res://Scripts/DungeonEntrance.cs" id="3_blbf1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0m3be"]
+size = Vector2(21, 2.5)
+
+[node name="DungeonEntrance" type="Node2D"]
+script = ExtResource("3_blbf1")
+
+[node name="CanvasGroup" type="CanvasGroup" parent="."]
+y_sort_enabled = true
+
+[node name="TopOfEntrance" type="Sprite2D" parent="CanvasGroup"]
+texture = ExtResource("2_blbf1")
+region_enabled = true
+region_rect = Rect2(0.668243, 112.409, 47.1296, 8.32172)
+
+[node name="BottomOfEntrance" type="Sprite2D" parent="CanvasGroup"]
+position = Vector2(0, 19)
+texture = ExtResource("2_blbf1")
+region_enabled = true
+region_rect = Rect2(0.668243, 121.09, 47.3095, 30.0771)
+
+[node name="Barrier" type="StaticBody2D" parent="."]
+collision_layer = 2
+
+[node name="BarrierCollisionPoly" type="CollisionPolygon2D" parent="Barrier"]
+position = Vector2(1, 11)
+polygon = PackedVector2Array(-19, 16, -19, -10, 18, -10, 18, 17, 11, 17, 11, 7, -11, 7, -11, 16)
+
+[node name="Entrance" type="Area2D" parent="."]
+collision_layer = 2
+
+[node name="CollisionShape2d" type="CollisionShape2D" parent="Entrance"]
+position = Vector2(1, 18.9)
+scale = Vector2(1, 0.72)
+shape = SubResource("RectangleShape2D_0m3be")
