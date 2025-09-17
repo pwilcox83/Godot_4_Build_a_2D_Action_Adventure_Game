@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://daqf51uy4qcd"]
+
+[ext_resource type="Script" uid="uid://bhmcvdme0nkt8" path="res://Scripts/LockedDoor.cs" id="1_4ku48"]
+[ext_resource type="Texture2D" uid="uid://otsgbh81w8h0" path="res://Assets/Backgrounds/Tilesets/TilesetReliefDetail.png" id="1_p02ut"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4ku48"]
+size = Vector2(16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eqplh"]
+atlas = ExtResource("1_p02ut")
+region = Rect2(32, 0, 16, 15)
+
+[node name="LockedDoor" type="StaticBody2D"]
+collision_layer = 2
+collision_mask = 7
+script = ExtResource("1_4ku48")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_4ku48")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_eqplh")

@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://3ve4wlvbdvt3"]
+[gd_scene load_steps=5 format=3 uid="uid://3ve4wlvbdvt3"]
 
 [ext_resource type="Texture2D" uid="uid://otsgbh81w8h0" path="res://Assets/Backgrounds/Tilesets/TilesetReliefDetail.png" id="2_blbf1"]
+[ext_resource type="PackedScene" uid="uid://daqf51uy4qcd" path="res://Scenes/GameScenes/GameSceneComponents/locked_door.tscn" id="3_0m3be"]
 [ext_resource type="Script" uid="uid://d2okr0dr1y8qv" path="res://Scripts/DungeonEntrance.cs" id="3_blbf1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0m3be"]
@@ -10,7 +11,6 @@ size = Vector2(21, 2.5)
 script = ExtResource("3_blbf1")
 
 [node name="CanvasGroup" type="CanvasGroup" parent="."]
-y_sort_enabled = true
 
 [node name="TopOfEntrance" type="Sprite2D" parent="CanvasGroup"]
 texture = ExtResource("2_blbf1")
@@ -32,6 +32,9 @@ polygon = PackedVector2Array(-19, 16, -19, -10, 18, -10, 18, 17, 11, 17, 11, 7, 
 
 [node name="Entrance" type="Area2D" parent="."]
 collision_layer = 2
+
+[node name="LockedDoor" parent="Entrance" instance=ExtResource("3_0m3be")]
+position = Vector2(0, 25)
 
 [node name="CollisionShape2d" type="CollisionShape2D" parent="Entrance"]
 position = Vector2(1, 18.9)

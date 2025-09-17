@@ -6,6 +6,10 @@ public partial class Player : CharacterBody2D
 {
     [Export]
     public int Speed = 100;
+    [Export]
+    public int Health = 100;
+    [Export]
+    public int PushStrength = 200;
     private int _score = 200;
     private float _money = 15.5f;
     private float _damage = 7.5f;
@@ -18,7 +22,8 @@ public partial class Player : CharacterBody2D
     {
         _animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
     }
-    public override void _Process(double delta)
+
+    public override void _PhysicsProcess(double delta)
     {
         var moveVector = Input.GetVector("move_left", "move_right", "move_up", "move_down");
         Velocity = moveVector * Speed;
@@ -42,8 +47,30 @@ public partial class Player : CharacterBody2D
         {
             _animatedSprite.Stop();
         }
-        
+        // Move first so collisions get resolved this frame
+       
+
+        // Now you can check collision
+        var collision = GetLastSlideCollision();
+        if (collision != null)
+        {
+            if (collision.GetCollider() is Node node && node.IsInGroup("pushable"))
+            {
+                if (node is RigidBody2D rigidBodyNode)
+                {
+                    var normal = collision.GetNormal();
+                    rigidBodyNode.ApplyCentralForce(-normal * PushStrength);
+                }
+            }
+
+            if (collision.GetCollider() is Node collider && collider.IsInGroup("wall"))
+            {
+                GD.Print("Hit wall!");
+            }
+        }
         MoveAndSlide();
+        // Animati MoveAndSlide();ons after move, so they match the final velocity
+     
     }
-    
+
 }

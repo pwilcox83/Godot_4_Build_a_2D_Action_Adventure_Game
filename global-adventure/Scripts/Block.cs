@@ -2,6 +2,6 @@ using Godot;
 
 namespace GlobalAdventure.Scripts;
 
-public partial class DungeonScene : Node2D
+public partial class Block : RigidBody2D
 {
 }

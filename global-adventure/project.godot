@@ -12,8 +12,12 @@ config_version=5
 
 config/name="Global Adventure"
 run/main_scene="uid://c5w6yrdno0u2t"
-config/features=PackedStringArray("4.4", "C#", "Forward Plus")
+config/features=PackedStringArray("4.5", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SceneManager="*res://Scripts/SceneManager.cs"
 
 [display]
 
