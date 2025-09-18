@@ -6,39 +6,32 @@ namespace GlobalAdventure.Scripts;
 
 public partial class LockedDoor : StaticBody2D
 {
-    [Export]
-    public int NumberOfButtonsRequired = 0;
     private CollisionShape2D _collisionShape2D;
     private Sprite2D _animatedSprite2D;
     private List<bool> _numberOfButtonsPressed;
-    
+    public bool IsDoorOpen { get; private set; }
+
     public override void _Ready()
     {
-        if (NumberOfButtonsRequired > 0)
-        {
-           _numberOfButtonsPressed = [];
-           for (var i = 0; i < NumberOfButtonsRequired; i++)
-           {
-               _numberOfButtonsPressed.Add(false);
-           }
-        }
         _collisionShape2D = GetNode<CollisionShape2D>("CollisionShape2D");
         _animatedSprite2D = GetNode<Sprite2D>("Sprite2D");
     }
 
-    public void SetNumberOfButtonsRequired(int numberOfButtonsRequired)
+    public void OpenDoor(bool openState)
     {
-        if (numberOfButtonsRequired <= 0) return;
-        _numberOfButtonsPressed = [];
-        for (var i = 0; i < numberOfButtonsRequired; i++)
+        if (IsDoorOpen == openState)
         {
-            _numberOfButtonsPressed.Add(false);
+            return;
         }
+
+        IsDoorOpen = openState;
+        CallDeferred(nameof(ChangeDoorState));
+        
     }
-    
-    private void SetDoorOpen()
+
+    private void ChangeDoorState() 
     {
-        if (_numberOfButtonsPressed.All(x => x == true) )
+        if (IsDoorOpen)
         {
             _collisionShape2D.Disabled = true;
             _animatedSprite2D.Visible = false;
@@ -48,11 +41,5 @@ public partial class LockedDoor : StaticBody2D
             _collisionShape2D.Disabled = false;
             _animatedSprite2D.Visible = true;
         }
-    }
-    
-    public void ButtonPressedState(int buttonNumber, bool b)
-    {
-        _numberOfButtonsPressed[buttonNumber] = b;
-        CallDeferred(nameof(SetDoorOpen));
     }
 }

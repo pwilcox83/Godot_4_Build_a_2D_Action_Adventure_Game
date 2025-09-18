@@ -7,23 +7,19 @@ public partial class DungeonEntrance : Node2D
     [Export]
     public string SceneToLoad;
     
-    [Export]
-    public int NumberOfButtonsRequired;
+    [Signal]
+    public delegate void PlayerEnteredEventHandler();
     
-    private int _numberOfButtonsPressed;
     private Area2D _entranceArea;
     private static SceneManager _sceneManager;
     private LockedDoor _lockedDoor;
-    [Signal]
-    public delegate void PlayerEnteredEventHandler();
-        
+    
     public override void _Ready()
     {
         _entranceArea = GetNode<Area2D>("Entrance");
         _entranceArea.BodyEntered += EnteredEventHandler;
         _sceneManager = GetNode<SceneManager>("/root/SceneManager");
         _lockedDoor = GetNode<LockedDoor>("Entrance/LockedDoor");
-        _lockedDoor.SetNumberOfButtonsRequired(NumberOfButtonsRequired);
     }
 
 
@@ -38,28 +34,9 @@ public partial class DungeonEntrance : Node2D
     {
         _sceneManager.LoadScene(SceneToLoad);
     }
-
-    private void SetDoorOpen(bool doorOpen)
-    {
-       _lockedDoor.ButtonPressedState(0,doorOpen);
-    }
-
-    public void PuzzleDoorButtonPressed()
-    {
-        GD.Print("Button pressed : {" + _numberOfButtonsPressed + "}");
-        _numberOfButtonsPressed++;
-        SetDoorOpen(true);
-    }
     
-    public void PuzzleDoorButtonUnpressed()
+    public void OpenDoor(bool doorOpen)
     {
-        GD.Print("Button pressed : {" + _numberOfButtonsPressed + "}");
-        _numberOfButtonsPressed = 0;
-        SetDoorOpen(false);
-    }
-
-    public void OpenDoor(bool b)
-    {
-        _lockedDoor.ButtonPressedState(0,true);
+        _lockedDoor.OpenDoor(doorOpen);
     }
 }

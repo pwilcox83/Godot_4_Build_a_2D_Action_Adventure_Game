@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 namespace GlobalAdventure.Scripts;
@@ -22,19 +23,14 @@ public partial class GameScene : Node2D
             _player.GlobalPosition = _sceneManager.GetPlayerEnteredDungeonPosition();
         }
         _puzzleButton = GetNode<PuzzleButton>("ObstacleLayer/PuzzleButton");
-        _puzzleButton.PuzzleButtonPressed += OpenDungeonDoor;
-        _puzzleButton.PuzzleButtonUnpressed += CloseDungeonDoor;
+        _puzzleButton.PuzzleButtonPressed += () => OpenDungeonDoor(true);
+        _puzzleButton.PuzzleButtonUnpressed += () => OpenDungeonDoor(false);
 
     }
 
-    private void CloseDungeonDoor()
+    private void OpenDungeonDoor(bool doorOpen)
     {
-        _dungeonEntrance.PuzzleDoorButtonUnpressed();
-    }
-
-    private void OpenDungeonDoor()
-    {
-        _dungeonEntrance.OpenDoor(true);
+        _dungeonEntrance.OpenDoor(doorOpen);
     }
 
     private void PlayerEnteredDungeon()
