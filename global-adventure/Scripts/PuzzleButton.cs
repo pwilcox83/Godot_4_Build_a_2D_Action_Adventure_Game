@@ -4,13 +4,17 @@ namespace GlobalAdventure.Scripts;
 
 public partial class PuzzleButton : Area2D
 {
-    private int _objectsInColider = 0;
-    private AnimatedSprite2D _animatedSprite2D;
-    
     [Signal]
     public delegate void PuzzleButtonPressedEventHandler();
+
     [Signal]
     public delegate void PuzzleButtonUnpressedEventHandler();
+
+    private AnimatedSprite2D _animatedSprite2D;
+
+    private int _objectsInColider;
+
+    [Export] public bool SingleUse;
 
     public bool Pressed { get; private set; }
 
@@ -21,7 +25,7 @@ public partial class PuzzleButton : Area2D
         BodyExited += _ => PlayAnimation(false);
     }
 
-    private void PlayAnimation( bool entered)
+    private void PlayAnimation(bool entered)
     {
         if (entered)
         {
@@ -31,12 +35,13 @@ public partial class PuzzleButton : Area2D
             _animatedSprite2D.Play("pressed");
             return;
         }
+
         _objectsInColider--;
-        if (_objectsInColider == 0)
+        if (_objectsInColider == 0 && !SingleUse)
         {
             Pressed = false;
             EmitSignal(SignalName.PuzzleButtonUnpressed);
-            _animatedSprite2D.Play("unpressed");    
+            _animatedSprite2D.Play("unpressed");
         }
     }
 }

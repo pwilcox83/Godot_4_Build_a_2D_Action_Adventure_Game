@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cltk85i5pi00s"]
+[gd_scene load_steps=22 format=3 uid="uid://cltk85i5pi00s"]
 
 [ext_resource type="Script" uid="uid://e5w83rgw18d7" path="res://Scripts/Player.cs" id="1_lyjr2"]
 [ext_resource type="Texture2D" uid="uid://df2gtqs5q2ukr" path="res://Assets/Actor/Characters/Caveman/SeparateAnim/Walk.png" id="2_lyjr2"]
@@ -142,8 +142,10 @@ animations = [{
 radius = 6.0
 height = 16.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lyjr2"]
+size = Vector2(8, 8)
+
 [node name="Player" type="CharacterBody2D"]
-position = Vector2(0, 1)
 collision_mask = 30
 motion_mode = 1
 script = ExtResource("1_lyjr2")
@@ -160,3 +162,14 @@ shape = SubResource("CapsuleShape2D_lyjr2")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, 3)
 zoom = Vector2(5, 5)
+limit_left = -273
+limit_top = -240
+limit_right = 368
+limit_bottom = 207
+
+[node name="InteractionArea" type="Area2D" parent="."]
+collision_mask = 66
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
+shape = SubResource("RectangleShape2D_lyjr2")
+debug_color = Color(0.83138645, 0.33691823, 0.5294571, 0.41960785)
