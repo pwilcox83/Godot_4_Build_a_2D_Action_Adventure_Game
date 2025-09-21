@@ -14,27 +14,20 @@ public partial class SwitchPuzzleManager : Marker2D
 
     public void IncreaseScore()
     {
-        GD.Print("Increase score");
         _score++;
-        GD.Print(_score);
         
         if(_score >= PuzzleScore)
         {
-            GD.Print("here 1");
             EmitSignal(SignalName.PuzzleSolved);
         }
     }
     
     public void DecreaseScore()
     {
-        GD.Print("Decrease score");
-        _score--;
-        GD.Print(_score);        
+        _score--;       
         if (_score < PuzzleScore)
         {
-            GD.Print("here 2");
             EmitSignal(SignalName.PuzzleFailed);    
         }
-        
     }
 }

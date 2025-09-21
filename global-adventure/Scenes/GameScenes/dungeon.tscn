@@ -874,11 +874,11 @@ position = Vector2(212, 55)
 [node name="LockedDoor" parent="." instance=ExtResource("5_wss2g")]
 position = Vector2(312, 38)
 
-[node name="Block" parent="." instance=ExtResource("7_nat5i")]
+[node name="Block" parent="." groups=["pushable"] instance=ExtResource("7_nat5i")]
 position = Vector2(184, 75)
 collision_mask = 63
 
-[node name="Block2" parent="." instance=ExtResource("7_nat5i")]
+[node name="Block2" parent="." groups=["pushable"] instance=ExtResource("7_nat5i")]
 position = Vector2(229, 27)
 collision_mask = 63
 

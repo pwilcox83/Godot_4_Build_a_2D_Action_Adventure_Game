@@ -17,7 +17,6 @@ public partial class GameScene : Node2D
         _dungeonEntrance = GetNode<DungeonEntrance>("ObstacleLayer/DungeonEntrance");
         _dungeonEntrance.PlayerEntered += PlayerEnteredDungeon;
         _sceneManager = GetNode<SceneManager>("/root/SceneManager");
-        GD.Print("Player position: " + _sceneManager.GetPlayerEnteredDungeonPosition());
         if (_sceneManager.GetPlayerEnteredDungeonPosition() != Vector2.Zero)
             _player.GlobalPosition = _sceneManager.GetPlayerEnteredDungeonPosition();
         _puzzleButton = GetNode<PuzzleButton>("PuzzleButton");

@@ -15,20 +15,31 @@ public partial class Dungeon : Node2D
 
     public override void _Ready()
     {
+        SetupBlockPuzzle();
+        SetupSecretWall();
+    }
+
+    private void SetupBlockPuzzle()
+    {
         _lockedDoor = GetNode<LockedDoor>("LockedDoor");
         var puzzleNodes = GetTree().GetNodesInGroup("puzzleButtons");
         _puzzleButtons = puzzleNodes.OfType<PuzzleButton>().ToList();
         foreach (var puzzleButton in _puzzleButtons)
         {
-            puzzleButton.PuzzleButtonPressed += PuzzleButtonPressStateChanged;
-            puzzleButton.PuzzleButtonUnpressed += PuzzleButtonPressStateChanged;
+            puzzleButton.PuzzleButtonPressed += () => _lockedDoor.OpenDoor(_puzzleButtons.All(x => x.Pressed));
+            puzzleButton.PuzzleButtonUnpressed += () => _lockedDoor.OpenDoor(_puzzleButtons.All(x => x.Pressed));
         }
+    }
+
+    private void SetupSecretWall()
+    {
         _secretWallLayer = GetNode<SecretWallLayer>("SecretWallLayer");
         _switchPuzzleManager = GetNode<SwitchPuzzleManager>("SwitchPuzzleManager");
-        _switchPuzzleManager.PuzzleSolved += () => SecretWallOpen(true);
-        _switchPuzzleManager.PuzzleFailed += () => SecretWallOpen(false);
         _puzzleSwitches = GetNode("SwitchPuzzleManager").GetChildren().OfType<Switch>().ToList();
-
+        
+        _switchPuzzleManager.PuzzleSolved += () => _secretWallLayer.SetInvisibleWall(true);
+        _switchPuzzleManager.PuzzleFailed += () => _secretWallLayer.SetInvisibleWall(false);
+        
         var puzzleSwitchCount = 0;
         foreach (var puzzleSwitch in _puzzleSwitches)
         {
@@ -45,17 +56,5 @@ public partial class Dungeon : Node2D
             }
         }
         _switchPuzzleManager.PuzzleScore = puzzleSwitchCount;
-    }
-
-    private void SecretWallOpen(bool open)
-    {
-        GD.Print($"Secret wall {(open ? "opened" : "closed")}");
-        
-        _secretWallLayer.SetInvisibleWall(open);
-    }
-
-    private void PuzzleButtonPressStateChanged()
-    {
-        _lockedDoor.OpenDoor(_puzzleButtons.All(x => x.Pressed));
     }
 }
