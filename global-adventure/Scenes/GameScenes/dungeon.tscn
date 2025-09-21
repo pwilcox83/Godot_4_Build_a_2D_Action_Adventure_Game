@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://cr54vn335h3jd"]
+[gd_scene load_steps=18 format=4 uid="uid://cr54vn335h3jd"]
 
 [ext_resource type="Script" uid="uid://b3sd2a3fi4yy8" path="res://Scripts/Dungeon.cs" id="1_nat5i"]
 [ext_resource type="PackedScene" uid="uid://3ve4wlvbdvt3" path="res://Scenes/GameScenes/GameSceneComponents/dungeon_entrance.tscn" id="2_yiu8b"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://dsurx5ameb61w" path="res://Scenes/GameScenes/GameSceneComponents/block.tscn" id="7_nat5i"]
 [ext_resource type="PackedScene" uid="uid://c4mgl0unryhnn" path="res://Scenes/GameScenes/GameSceneComponents/ice_block.tscn" id="9_mqw6q"]
 [ext_resource type="PackedScene" uid="uid://boloxnxd3lrur" path="res://Scenes/GameScenes/GameSceneComponents/switch.tscn" id="11_hepg0"]
+[ext_resource type="PackedScene" uid="uid://lfufo63dqad4" path="res://Scenes/GameScenes/GameSceneComponents/switch_puzzle_manager.tscn" id="11_rpanp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wss2g"]
 texture = ExtResource("4_jiekg")
@@ -892,5 +893,16 @@ collision_mask = 18
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("RectangleShape2D_mqw6q")
 
-[node name="Switch" parent="." instance=ExtResource("11_hepg0")]
-position = Vector2(82, -87)
+[node name="SwitchPuzzleManager" parent="." instance=ExtResource("11_rpanp")]
+
+[node name="Switch" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
+position = Vector2(3, -45)
+
+[node name="Switch2" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
+position = Vector2(130, -44)
+
+[node name="Switch3" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
+position = Vector2(93, -45)
+
+[node name="Switch4" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
+position = Vector2(46, -45)

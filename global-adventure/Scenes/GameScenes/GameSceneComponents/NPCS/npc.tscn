@@ -1,0 +1,80 @@
+[gd_scene load_steps=10 format=3 uid="uid://dd3jago350tmg"]
+
+[ext_resource type="Texture2D" uid="uid://cvd4kjog1dowh" path="res://Assets/Actor/Characters/EggBoy/SpriteSheet.png" id="1_dl43q"]
+[ext_resource type="Script" uid="uid://00eca16hr5bu" path="res://Scripts/Npc.cs" id="1_y8jbc"]
+[ext_resource type="Texture2D" uid="uid://bq64iodwb0i22" path="res://Assets/Ui/Dialog/DialogBoxFaceset.png" id="3_u4obg"]
+[ext_resource type="Texture2D" uid="uid://blu5i1ular45g" path="res://Assets/Actor/Characters/EggBoy/Faceset.png" id="4_p555u"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u4obg"]
+atlas = ExtResource("1_dl43q")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y8jbc"]
+size = Vector2(16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ntaaa"]
+atlas = ExtResource("4_p555u")
+
+[sub_resource type="LabelSettings" id="LabelSettings_xux2e"]
+font_size = 48
+font_color = Color(0.0056611504, 0.0056611514, 0.00566115, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_p555u"]
+font_size = 23
+font_color = Color(0.973535, 0.9735351, 0.973535, 1)
+
+[node name="NPC" type="StaticBody2D" groups=["Interactable", "interactable"]]
+process_mode = 3
+collision_layer = 64
+script = ExtResource("1_y8jbc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_u4obg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_y8jbc")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -553.0
+offset_top = -246.99997
+offset_right = -253.0
+offset_bottom = -189.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(3.7, 3.7)
+texture = ExtResource("3_u4obg")
+
+[node name="NPCIcon" type="TextureRect" parent="CanvasLayer/TextureRect"]
+layout_mode = 0
+offset_left = 6.2162156
+offset_top = 14.054055
+offset_right = 44.216217
+offset_bottom = 52.054054
+texture = SubResource("AtlasTexture_ntaaa")
+
+[node name="NpcTextLabel" type="Label" parent="CanvasLayer"]
+offset_left = 282.0
+offset_top = 532.0
+offset_right = 1151.0
+offset_bottom = 651.0
+text = "Hello!!!!!"
+label_settings = SubResource("LabelSettings_xux2e")
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="NpcName" type="Label" parent="CanvasLayer"]
+offset_left = 111.0
+offset_top = 477.0
+offset_right = 338.0
+offset_bottom = 509.0
+text = "NPC"
+label_settings = SubResource("LabelSettings_p555u")
+autowrap_mode = 3

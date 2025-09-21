@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=3 uid="uid://boloxnxd3lrur"]
+
+[ext_resource type="Script" uid="uid://rxhqwg8cfukp" path="res://Scripts/Switch.cs" id="1_i72vn"]
+[ext_resource type="Texture2D" uid="uid://bo24rm37df6k4" path="res://Assets/Backgrounds/Tilesets/TilesetDungeon.png" id="1_x8st5"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i72vn"]
+atlas = ExtResource("1_x8st5")
+region = Rect2(64, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_df046"]
+atlas = ExtResource("1_x8st5")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_biqun"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i72vn")
+}],
+"loop": true,
+"name": &"activated",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_df046")
+}],
+"loop": true,
+"name": &"deactivated",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x8st5"]
+size = Vector2(16, 8)
+
+[node name="Switch" type="StaticBody2D" groups=["interactable"]]
+collision_layer = 2
+script = ExtResource("1_i72vn")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_biqun")
+animation = &"deactivated"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 4)
+shape = SubResource("RectangleShape2D_x8st5")
