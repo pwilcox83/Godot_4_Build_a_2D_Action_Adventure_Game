@@ -4,6 +4,8 @@ namespace GlobalAdventure.Scripts;
 
 public partial class Switch : StaticBody2D
 {
+    [Export]
+    public bool IsPuzzleSwitch;
     
     public bool IsInteractable { get; set; }
     public bool IsSwitchedOn { get; private set; }

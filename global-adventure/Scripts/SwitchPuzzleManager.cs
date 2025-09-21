@@ -6,7 +6,7 @@ public partial class SwitchPuzzleManager : Marker2D
 {
     private int _score;
     [Export]
-    public int PuzzleScore = 2;
+    public int PuzzleScore;
     [Signal]
     public delegate void PuzzleSolvedEventHandler();
     [Signal]

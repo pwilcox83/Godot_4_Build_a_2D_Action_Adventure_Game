@@ -897,12 +897,14 @@ shape = SubResource("RectangleShape2D_mqw6q")
 
 [node name="Switch" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
 position = Vector2(3, -45)
+IsPuzzleSwitch = true
 
 [node name="Switch2" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
 position = Vector2(130, -44)
 
 [node name="Switch3" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
 position = Vector2(93, -45)
+IsPuzzleSwitch = true
 
 [node name="Switch4" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
 position = Vector2(46, -45)

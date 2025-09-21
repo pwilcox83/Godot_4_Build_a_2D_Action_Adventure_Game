@@ -27,21 +27,24 @@ public partial class Dungeon : Node2D
         _switchPuzzleManager = GetNode<SwitchPuzzleManager>("SwitchPuzzleManager");
         _switchPuzzleManager.PuzzleSolved += () => SecretWallOpen(true);
         _switchPuzzleManager.PuzzleFailed += () => SecretWallOpen(false);
-        
         _puzzleSwitches = GetNode("SwitchPuzzleManager").GetChildren().OfType<Switch>().ToList();
-        for (var i = 0; i < _puzzleSwitches.Count; i++)
+
+        var puzzleSwitchCount = 0;
+        foreach (var puzzleSwitch in _puzzleSwitches)
         {
-            if (i is 0 or 2)
+            if (puzzleSwitch.IsPuzzleSwitch)
             {
-                _puzzleSwitches[i].SwitchedOn += _switchPuzzleManager.IncreaseScore;
-                _puzzleSwitches[i].SwitchedOff += _switchPuzzleManager.DecreaseScore;
+                puzzleSwitch.SwitchedOn += _switchPuzzleManager.IncreaseScore;
+                puzzleSwitch.SwitchedOff += _switchPuzzleManager.DecreaseScore;
+                puzzleSwitchCount++;
             }
             else
             {
-                _puzzleSwitches[i].SwitchedOn += _switchPuzzleManager.DecreaseScore;
-                _puzzleSwitches[i].SwitchedOff += _switchPuzzleManager.IncreaseScore;
+                puzzleSwitch.SwitchedOn += _switchPuzzleManager.DecreaseScore;
+                puzzleSwitch.SwitchedOff += _switchPuzzleManager.IncreaseScore;
             }
         }
+        _switchPuzzleManager.PuzzleScore = puzzleSwitchCount;
     }
 
     private void SecretWallOpen(bool open)
