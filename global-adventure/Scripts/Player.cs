@@ -12,6 +12,9 @@ public partial class Player : CharacterBody2D
     private float _money = 15.5f;
     private int _score = 200;
     private string _userName = "Bob";
+    private int _scrollCount;
+    private Label _scrollCountLabel;
+    private SceneManager _sceneManager;
 
     [Export] public int Health = 100;
 
@@ -21,10 +24,13 @@ public partial class Player : CharacterBody2D
 
     public override void _Ready()
     {
+        _sceneManager =  GetNode<SceneManager>("/root/SceneManager");
         _animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         _InteractionArea = GetNode<Area2D>("InteractionArea");
         _InteractionArea.BodyEntered += InteractionAreaEntered;
         _InteractionArea.BodyExited += InteractionAreaExited;
+        _scrollCountLabel = GetNode<Label>("%TreasureLabel");
+        _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
     }
 
     private void InteractionAreaEntered(Node2D body)
@@ -47,12 +53,20 @@ public partial class Player : CharacterBody2D
             case Switch gameSwitch when gameSwitch.IsInGroup("interactable"):
                 gameSwitch.IsInteractable = active;
                 break;
+            case TreasureChest tressureChest when tressureChest.IsInGroup("interactable"):
+                tressureChest.IsInteractable = active;
+                break;
             default:
                 break;
         }
     }
 
- 
+    public override void _Process(double delta)
+    {
+        _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
+
+    }
+
 
     public override void _PhysicsProcess(double delta)
     {

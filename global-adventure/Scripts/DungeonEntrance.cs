@@ -12,7 +12,11 @@ public partial class DungeonEntrance : Node2D
     private Area2D _entranceArea;
     private LockedDoor _lockedDoor;
 
-    [Export] public string SceneToLoad;
+    [Export] 
+    public string SceneToLoad;
+
+    [Export] 
+    public bool IsOpen;
 
     public override void _Ready()
     {
@@ -20,8 +24,11 @@ public partial class DungeonEntrance : Node2D
         _entranceArea.BodyEntered += EnteredEventHandler;
         _sceneManager = GetNode<SceneManager>("/root/SceneManager");
         _lockedDoor = GetNode<LockedDoor>("Entrance/LockedDoor");
+        if (IsOpen)
+        {
+            OpenDoor(true);
+        }
     }
-
 
     private void EnteredEventHandler(Node2D body)
     {

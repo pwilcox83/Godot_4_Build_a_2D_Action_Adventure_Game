@@ -1,11 +1,13 @@
-using System.Collections.Generic;
+using System.Linq;
 using Godot;
+using Godot.Collections;
 
 namespace GlobalAdventure.Scripts;
 
 public partial class SceneManager : Node
 {
-    private readonly Dictionary<string, string> _paths = new()
+    public Array<string> OpenedChests = [];
+    private readonly System.Collections.Generic.Dictionary<string, string> _paths = new()
     {
         { "World", "res://Scenes/GameScenes/game_scene.tscn" },
         { "Dungeon", "res://Scenes/GameScenes/dungeon.tscn" }
@@ -17,7 +19,7 @@ public partial class SceneManager : Node
     {
         if (_paths.TryGetValue(key, out var path) && !string.IsNullOrEmpty(path))
             return GetTree().ChangeSceneToFile(path);
-
+        
         return Error.Failed;
     }
 

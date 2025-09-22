@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://cr54vn335h3jd"]
+[gd_scene load_steps=19 format=4 uid="uid://cr54vn335h3jd"]
 
 [ext_resource type="Script" uid="uid://b3sd2a3fi4yy8" path="res://Scripts/Dungeon.cs" id="1_nat5i"]
 [ext_resource type="PackedScene" uid="uid://3ve4wlvbdvt3" path="res://Scenes/GameScenes/GameSceneComponents/dungeon_entrance.tscn" id="2_yiu8b"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://c4mgl0unryhnn" path="res://Scenes/GameScenes/GameSceneComponents/ice_block.tscn" id="9_mqw6q"]
 [ext_resource type="PackedScene" uid="uid://boloxnxd3lrur" path="res://Scenes/GameScenes/GameSceneComponents/switch.tscn" id="11_hepg0"]
 [ext_resource type="PackedScene" uid="uid://lfufo63dqad4" path="res://Scenes/GameScenes/GameSceneComponents/switch_puzzle_manager.tscn" id="11_rpanp"]
+[ext_resource type="PackedScene" uid="uid://ccrskqfd41dgq" path="res://Scenes/GameScenes/GameSceneComponents/treasure_chest.tscn" id="13_o1hpp"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wss2g"]
 texture = ExtResource("4_jiekg")
@@ -856,8 +857,9 @@ script = ExtResource("4_j0yah")
 
 [node name="DungeonEntrance" parent="." instance=ExtResource("2_yiu8b")]
 y_sort_enabled = true
-position = Vector2(462, -51)
+position = Vector2(25, -223)
 SceneToLoad = "World"
+IsOpen = true
 
 [node name="PuzzleButtons" type="Node2D" parent="."]
 
@@ -908,3 +910,6 @@ IsPuzzleSwitch = true
 
 [node name="Switch4" parent="SwitchPuzzleManager" instance=ExtResource("11_hepg0")]
 position = Vector2(46, -45)
+
+[node name="TreasureChest" parent="." instance=ExtResource("13_o1hpp")]
+position = Vector2(66, -175)
