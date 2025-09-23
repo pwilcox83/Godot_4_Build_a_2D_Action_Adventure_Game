@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using Godot;
 
 namespace GlobalAdventure.Scripts;
@@ -7,7 +8,7 @@ public partial class Player : CharacterBody2D
     private AnimatedSprite2D _animatedSprite;
     private float _damage = 7.5f;
     private string _firstName = "Paul";
-    private Area2D _InteractionArea;
+    private Area2D _interactionArea;
     private bool _isPlayerAlive;
     private float _money = 15.5f;
     private int _score = 200;
@@ -15,22 +16,42 @@ public partial class Player : CharacterBody2D
     private int _scrollCount;
     private Label _scrollCountLabel;
     private SceneManager _sceneManager;
-
-    [Export] public int Health = 100;
-
-    [Export] public int PushStrength = 200;
-
+    private Area2D _playerHitBox;
+    private AnimatedSprite2D _playerHealthIndicator;
+    [Export] 
+    public int Health = 100;
+    [Export] 
+    public int PushStrength = 200;
     [Export] public int Speed = 100;
 
     public override void _Ready()
     {
         _sceneManager =  GetNode<SceneManager>("/root/SceneManager");
         _animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-        _InteractionArea = GetNode<Area2D>("InteractionArea");
-        _InteractionArea.BodyEntered += InteractionAreaEntered;
-        _InteractionArea.BodyExited += InteractionAreaExited;
+        _interactionArea = GetNode<Area2D>("InteractionArea");
+        _interactionArea.BodyEntered += InteractionAreaEntered;
+        _interactionArea.BodyExited += InteractionAreaExited;
         _scrollCountLabel = GetNode<Label>("%TreasureLabel");
         _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
+        _playerHitBox = GetNode<Area2D>("HitBoxArea2d");
+        _playerHitBox.BodyEntered += PlayerHitByGameObject;
+        _playerHealthIndicator = GetNode<AnimatedSprite2D>("%PlayerHealthIndicator");
+        _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
+    }
+
+    private void PlayerHitByGameObject(Node2D body)
+    {
+        if (body is not SlimeEnemy) return;
+        _sceneManager.PlayerHealth--;
+        _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
+        if (_sceneManager.PlayerHealth >= 0) return;
+        CallDeferred(MethodName.Die);
+    }
+    
+    private void Die()
+    {
+        _sceneManager.PlayerHealth = 3;
+        GetTree().ReloadCurrentScene();
     }
 
     private void InteractionAreaEntered(Node2D body)
@@ -64,9 +85,7 @@ public partial class Player : CharacterBody2D
     public override void _Process(double delta)
     {
         _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
-
     }
-
 
     public override void _PhysicsProcess(double delta)
     {
@@ -82,22 +101,22 @@ public partial class Player : CharacterBody2D
         if (Velocity.X > 0)
         {
             _animatedSprite.Play("move_right");
-            _InteractionArea.Position = new Vector2(5, 2);
+            _interactionArea.Position = new Vector2(5, 2);
         }
         else if (Velocity.X < 0)
         {
             _animatedSprite.Play("move_left");
-            _InteractionArea.Position = new Vector2(-5, 2);
+            _interactionArea.Position = new Vector2(-5, 2);
         }
         else if (Velocity.Y > 0)
         {
             _animatedSprite.Play("move_down");
-            _InteractionArea.Position = new Vector2(0, 8);
+            _interactionArea.Position = new Vector2(0, 8);
         }
         else if (Velocity.Y < 0)
         {
             _animatedSprite.Play("move_up");
-            _InteractionArea.Position = new Vector2(0, -4);
+            _interactionArea.Position = new Vector2(0, -4);
         }
         else
         {

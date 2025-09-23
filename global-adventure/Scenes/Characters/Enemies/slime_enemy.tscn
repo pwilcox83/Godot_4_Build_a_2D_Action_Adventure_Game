@@ -1,0 +1,36 @@
+[gd_scene load_steps=6 format=3 uid="uid://bdanlc5spvdfw"]
+
+[ext_resource type="Script" uid="uid://dhr4vbkhj4x1p" path="res://Scripts/SlimeEnemy.cs" id="1_1xh2f"]
+[ext_resource type="Texture2D" uid="uid://cfpqr4w7yvy4w" path="res://Assets/Actor/Monsters/Slime/Slime.png" id="1_y2xoq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1xh2f"]
+atlas = ExtResource("1_y2xoq")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_d3gdh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1xh2f")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qm83r"]
+radius = 3.0
+height = 10.0
+
+[node name="SlimeEnemy" type="CharacterBody2D"]
+collision_layer = 4
+collision_mask = 42
+script = ExtResource("1_1xh2f")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_d3gdh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_qm83r")

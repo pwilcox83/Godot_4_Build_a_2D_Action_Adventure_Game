@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://bs35ef7t4pivd"]
+[gd_scene load_steps=8 format=3 uid="uid://bs35ef7t4pivd"]
 
 [ext_resource type="Texture2D" uid="uid://bo24rm37df6k4" path="res://Assets/Backgrounds/Tilesets/TilesetDungeon.png" id="1_aaxfb"]
 [ext_resource type="Script" uid="uid://xc48kcnsadk5" path="res://Scripts/PuzzleButton.cs" id="1_e5821"]
+[ext_resource type="AudioStream" uid="uid://bu53pyc2306kq" path="res://Assets/Sounds/Game/Gold2.wav" id="3_ebdm5"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e5821"]
 atlas = ExtResource("1_aaxfb")
@@ -44,3 +45,6 @@ animation = &"unpressed"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_5jl55")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_ebdm5")

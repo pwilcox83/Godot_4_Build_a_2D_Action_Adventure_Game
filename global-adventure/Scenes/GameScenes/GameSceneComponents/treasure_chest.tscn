@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://ccrskqfd41dgq"]
+[gd_scene load_steps=9 format=3 uid="uid://ccrskqfd41dgq"]
 
 [ext_resource type="Texture2D" uid="uid://dudgkyg4tws4k" path="res://Assets/Items/Treasure/BigTreasureChest.png" id="1_62x6w"]
 [ext_resource type="Script" uid="uid://ssdrm1xe8tkq" path="res://Scripts/TreasureChest.cs" id="1_q3ka2"]
 [ext_resource type="Texture2D" uid="uid://ci00lk1pappbp" path="res://Assets/Items/Scroll/ScrollEmpty.png" id="3_ms0lm"]
+[ext_resource type="AudioStream" uid="uid://d2ar18gvvd8bv" path="res://Assets/Sounds/Game/Secret1.wav" id="4_1qxk3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q3ka2"]
 size = Vector2(16, 16)
@@ -53,3 +54,7 @@ texture = ExtResource("3_ms0lm")
 [node name="Timer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_1qxk3")
+pitch_scale = 1.59

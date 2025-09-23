@@ -12,9 +12,12 @@ public partial class PuzzleButton : Area2D
 
     private AnimatedSprite2D _animatedSprite2D;
 
-    private int _objectsInColider;
+    private int _objectsInCollider;
 
-    [Export] public bool SingleUse;
+    [Export] 
+    public bool SingleUse;
+    
+    private AudioStreamPlayer2D _buttonSound;
 
     public bool Pressed { get; private set; }
 
@@ -23,25 +26,31 @@ public partial class PuzzleButton : Area2D
         _animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         BodyEntered += _ => PlayAnimation(true);
         BodyExited += _ => PlayAnimation(false);
+        _buttonSound = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
     }
 
     private void PlayAnimation(bool entered)
     {
         if (entered)
         {
+            _buttonSound.PitchScale = 1.0f;
+            _buttonSound.Play();
             Pressed = true;
             EmitSignal(SignalName.PuzzleButtonPressed);
-            _objectsInColider++;
+            _objectsInCollider++;
             _animatedSprite2D.Play("pressed");
             return;
         }
 
-        _objectsInColider--;
-        if (_objectsInColider == 0 && !SingleUse)
-        {
-            Pressed = false;
-            EmitSignal(SignalName.PuzzleButtonUnpressed);
-            _animatedSprite2D.Play("unpressed");
-        }
+        _buttonSound.PitchScale = 0.8f;
+        _buttonSound.Play();
+
+        _objectsInCollider--;
+        
+        if (_objectsInCollider != 0 || SingleUse) return;
+        
+        Pressed = false;
+        EmitSignal(SignalName.PuzzleButtonUnpressed);
+        _animatedSprite2D.Play("unpressed");
     }
 }

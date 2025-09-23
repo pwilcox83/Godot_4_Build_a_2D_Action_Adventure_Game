@@ -6,30 +6,28 @@ public partial class Switch : StaticBody2D
 {
     [Export]
     public bool IsPuzzleSwitch;
-    
     public bool IsInteractable { get; set; }
     public bool IsSwitchedOn { get; private set; }
-    
     [Signal]
     public delegate void SwitchedOffEventHandler();
     [Signal]
     public delegate void SwitchedOnEventHandler();
     
-    
-    
+    private AudioStreamPlayer2D _switchSound;
     private AnimatedSprite2D _animatedSprite2D;
 
     public override void _Ready()
     {
         _animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        _switchSound = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
     }
     public override void _Process(double delta)
     {
         if (!Input.IsActionJustPressed("interact") || !IsInteractable) return;
-        
+        _switchSound.Play();
         IsSwitchedOn = !IsSwitchedOn;
         _animatedSprite2D.Play(IsSwitchedOn ? "activated" : "deactivated");
-
+    
         if (IsSwitchedOn)
         {
             EmitSignal(SignalName.SwitchedOn);

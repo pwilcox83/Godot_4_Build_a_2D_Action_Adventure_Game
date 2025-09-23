@@ -9,7 +9,6 @@ public partial class TreasureChest : StaticBody2D
     public string TreasureName;
     public bool IsInteractable { get; set; }
     public bool IsOpen { get; private set; }
-    
     [Signal]
     public delegate void SwitchedOffEventHandler();
     [Signal]
@@ -17,10 +16,9 @@ public partial class TreasureChest : StaticBody2D
 
     private AnimatedSprite2D _animatedSprite2D;
     private Sprite2D _sprite2D;
-    
     private Timer _timer;
-    
     private SceneManager _sceneManager;
+    private AudioStreamPlayer2D _chestSound;
 
     public override void _Ready()
     {
@@ -35,10 +33,16 @@ public partial class TreasureChest : StaticBody2D
             OpenChest();
         }
         
+        _chestSound = GetNode<AudioStreamPlayer2D>("AudioStreamPlayer2D");
+        
     }
 
     private void ShowTreasure(bool showTreasure)
     {
+        if (showTreasure)
+        {
+            _chestSound.Play();    
+        }
         _sprite2D.Visible = showTreasure;
     }
 

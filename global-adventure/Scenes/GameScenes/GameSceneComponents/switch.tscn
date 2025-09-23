@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://boloxnxd3lrur"]
+[gd_scene load_steps=8 format=3 uid="uid://boloxnxd3lrur"]
 
 [ext_resource type="Script" uid="uid://rxhqwg8cfukp" path="res://Scripts/Switch.cs" id="1_i72vn"]
 [ext_resource type="Texture2D" uid="uid://bo24rm37df6k4" path="res://Assets/Backgrounds/Tilesets/TilesetDungeon.png" id="1_x8st5"]
+[ext_resource type="AudioStream" uid="uid://b3ciqo0fai8tv" path="res://Assets/Sounds/Game/Magic1.wav" id="3_df046"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i72vn"]
 atlas = ExtResource("1_x8st5")
@@ -44,3 +45,6 @@ animation = &"deactivated"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 4)
 shape = SubResource("RectangleShape2D_x8st5")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_df046")

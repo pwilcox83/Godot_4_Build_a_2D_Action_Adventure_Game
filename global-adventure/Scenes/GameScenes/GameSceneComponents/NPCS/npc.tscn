@@ -1,7 +1,8 @@
-[gd_scene load_steps=10 format=3 uid="uid://dd3jago350tmg"]
+[gd_scene load_steps=11 format=3 uid="uid://dd3jago350tmg"]
 
 [ext_resource type="Texture2D" uid="uid://cvd4kjog1dowh" path="res://Assets/Actor/Characters/EggBoy/SpriteSheet.png" id="1_dl43q"]
 [ext_resource type="Script" uid="uid://00eca16hr5bu" path="res://Scripts/Npc.cs" id="1_y8jbc"]
+[ext_resource type="AudioStream" uid="uid://b610v513wvi52" path="res://Assets/Sounds/Game/MiniImpact.wav" id="2_ntaaa"]
 [ext_resource type="Texture2D" uid="uid://bq64iodwb0i22" path="res://Assets/Ui/Dialog/DialogBoxFaceset.png" id="3_u4obg"]
 [ext_resource type="Texture2D" uid="uid://blu5i1ular45g" path="res://Assets/Actor/Characters/EggBoy/Faceset.png" id="4_p555u"]
 
@@ -27,6 +28,9 @@ font_color = Color(0.973535, 0.9735351, 0.973535, 1)
 process_mode = 3
 collision_layer = 64
 script = ExtResource("1_y8jbc")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_ntaaa")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = SubResource("AtlasTexture_u4obg")

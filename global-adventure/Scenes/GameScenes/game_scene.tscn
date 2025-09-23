@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=4 uid="uid://c5w6yrdno0u2t"]
+[gd_scene load_steps=33 format=4 uid="uid://c5w6yrdno0u2t"]
 
 [ext_resource type="PackedScene" uid="uid://cltk85i5pi00s" path="res://Scenes/Characters/Player/player.tscn" id="1_q3wsq"]
 [ext_resource type="Script" uid="uid://cy2u5guin3o8c" path="res://Scripts/GameScene.cs" id="1_rtyx3"]
@@ -14,6 +14,8 @@
 [ext_resource type="Texture2D" uid="uid://cq1i5m5cmnqtt" path="res://Assets/Actor/Characters/Cavegirl/SpriteSheet.png" id="9_638s3"]
 [ext_resource type="Texture2D" uid="uid://b1oc8ryqf7kck" path="res://Assets/Actor/Characters/CaveLion/SpriteSheet.png" id="11_tqhw1"]
 [ext_resource type="Texture2D" uid="uid://cpx7oy3yx7p23" path="res://Assets/Actor/Characters/CaveLion/Faceset.png" id="12_25noi"]
+[ext_resource type="PackedScene" uid="uid://bdanlc5spvdfw" path="res://Scenes/Characters/Enemies/slime_enemy.tscn" id="14_3fe81"]
+[ext_resource type="AudioStream" uid="uid://ksu8rdbqa6di" path="res://Assets/Musics/1 - Adventure Begin.ogg" id="15_0kpbh"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8bwtj"]
 texture = ExtResource("2_pybfh")
@@ -860,7 +862,7 @@ SceneToLoad = "Dungeon"
 [node name="NPC" parent="ObstacleLayer" instance=ExtResource("8_ibklh")]
 position = Vector2(32, 44)
 
-[node name="Sprite2D" parent="ObstacleLayer/NPC" index="0"]
+[node name="Sprite2D" parent="ObstacleLayer/NPC" index="1"]
 texture = SubResource("AtlasTexture_o1fp4")
 
 [node name="NPCIcon" parent="ObstacleLayer/NPC/CanvasLayer/TextureRect" index="0"]
@@ -876,7 +878,7 @@ text = "Egg"
 position = Vector2(-12, 23)
 DialogueLines = Array[String](["Hi", "The switch next to me", "Is useless", "Hahaha."])
 
-[node name="Sprite2D" parent="ObstacleLayer/NPC2" index="0"]
+[node name="Sprite2D" parent="ObstacleLayer/NPC2" index="1"]
 texture = SubResource("AtlasTexture_tqhw1")
 
 [node name="NPCIcon" parent="ObstacleLayer/NPC2/CanvasLayer/TextureRect" index="0"]
@@ -894,7 +896,7 @@ label_settings = SubResource("LabelSettings_638s3")
 position = Vector2(-46, 14)
 DialogueLines = Array[String](["Meow!", "Meow!!!", "Meowwww!!!!", "MONEY PLEASE!"])
 
-[node name="Sprite2D" parent="ObstacleLayer/NPC3" index="0"]
+[node name="Sprite2D" parent="ObstacleLayer/NPC3" index="1"]
 texture = SubResource("AtlasTexture_0kpbh")
 
 [node name="NPCIcon" parent="ObstacleLayer/NPC3/CanvasLayer/TextureRect" index="0"]
@@ -906,6 +908,9 @@ text = "Meow!"
 [node name="NpcName" parent="ObstacleLayer/NPC3/CanvasLayer" index="2"]
 text = "Kitty"
 label_settings = SubResource("LabelSettings_638s3")
+
+[node name="SlimeEnemy" parent="ObstacleLayer" instance=ExtResource("14_3fe81")]
+position = Vector2(65, 98)
 
 [node name="Block" parent="." groups=["pushable"] instance=ExtResource("6_vnxuf")]
 position = Vector2(153, 63)
@@ -931,6 +936,13 @@ shape = SubResource("RectangleShape2D_ibklh")
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="PuzzleWars"]
 position = Vector2(-16, 37)
 shape = SubResource("RectangleShape2D_ibklh")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+process_mode = 3
+stream = ExtResource("15_0kpbh")
+volume_db = -20.991
+autoplay = true
+parameters/looping = true
 
 [editable path="ObstacleLayer/NPC"]
 [editable path="ObstacleLayer/NPC2"]
