@@ -1,10 +1,27 @@
-[gd_scene load_steps=33 format=3 uid="uid://cltk85i5pi00s"]
+[gd_scene load_steps=44 format=3 uid="uid://cltk85i5pi00s"]
 
 [ext_resource type="Script" uid="uid://e5w83rgw18d7" path="res://Scripts/Player.cs" id="1_lyjr2"]
+[ext_resource type="Texture2D" uid="uid://b254r7iohmbpr" path="res://Assets/Actor/Characters/Caveman/SeparateAnim/Attack.png" id="2_fu1fx"]
 [ext_resource type="Texture2D" uid="uid://df2gtqs5q2ukr" path="res://Assets/Actor/Characters/Caveman/SeparateAnim/Walk.png" id="2_lyjr2"]
 [ext_resource type="Texture2D" uid="uid://ci00lk1pappbp" path="res://Assets/Items/Scroll/ScrollEmpty.png" id="3_siygm"]
 [ext_resource type="Texture2D" uid="uid://bhmiolrycha72" path="res://Assets/Ui/LifeReceptacle/heart_2.png" id="4_qqvsf"]
 [ext_resource type="Texture2D" uid="uid://coowmyjc0stby" path="res://Assets/Items/Weapons/Club/Sprite.png" id="5_apx8m"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a7o8c"]
+atlas = ExtResource("2_fu1fx")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p6wb4"]
+atlas = ExtResource("2_fu1fx")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y3fvr"]
+atlas = ExtResource("2_fu1fx")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_23420"]
+atlas = ExtResource("2_fu1fx")
+region = Rect2(16, 0, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aencf"]
 atlas = ExtResource("2_lyjr2")
@@ -72,6 +89,38 @@ region = Rect2(16, 48, 16, 16)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_plevq"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a7o8c")
+}],
+"loop": true,
+"name": &"attack_down",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p6wb4")
+}],
+"loop": true,
+"name": &"attack_left",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y3fvr")
+}],
+"loop": true,
+"name": &"attack_right",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_23420")
+}],
+"loop": true,
+"name": &"attack_up",
+"speed": 5.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_aencf")
@@ -193,6 +242,154 @@ radius = 3.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_apx8m"]
 size = Vector2(7, 15)
 
+[sub_resource type="Animation" id="Animation_fu1fx"]
+resource_name = "attack_up"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponSprite:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-1.4835298641951802, 1.4835298641951802]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -9)]
+}
+
+[sub_resource type="Animation" id="Animation_dxcao"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponSprite:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -9)]
+}
+
+[sub_resource type="Animation" id="Animation_1mdwi"]
+resource_name = "attack_right"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponSprite:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.08726646, 3.0543263]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(5, 3)]
+}
+
+[sub_resource type="Animation" id="Animation_8gg06"]
+resource_name = "attack_down"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponSprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(2, 6)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponSprite:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.3089969, 4.363323]
+}
+
+[sub_resource type="Animation" id="Animation_cscr0"]
+resource_name = "attack_left"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponSprite:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [6.195919, 3.01941960595019]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-5, 4)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_8gg06"]
+_data = {
+&"RESET": SubResource("Animation_dxcao"),
+&"attack_down": SubResource("Animation_8gg06"),
+&"attack_left": SubResource("Animation_cscr0"),
+&"attack_right": SubResource("Animation_1mdwi"),
+&"attack_up": SubResource("Animation_fu1fx")
+}
+
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 26
 motion_mode = 1
@@ -200,7 +397,8 @@ script = ExtResource("1_lyjr2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_plevq")
-animation = &"move_down"
+animation = &"attack_left"
+autoplay = "move_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 1)
@@ -264,17 +462,23 @@ debug_color = Color(0.28627452, 0.61960787, 0, 0.41960785)
 
 [node name="WeaponSprite" type="Sprite2D" parent="."]
 visible = false
-position = Vector2(0, -13)
+position = Vector2(-2, -9)
 texture = ExtResource("5_apx8m")
+offset = Vector2(0, -5)
 
 [node name="WeaponArea2D" type="Area2D" parent="WeaponSprite"]
 collision_mask = 4
 monitoring = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="WeaponSprite/WeaponArea2D"]
-position = Vector2(-0.5, 0.5)
+position = Vector2(-0.5, -5)
 shape = SubResource("RectangleShape2D_apx8m")
 
 [node name="WeaponTimer" type="Timer" parent="WeaponSprite"]
 wait_time = 0.4
 one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_8gg06")
+}

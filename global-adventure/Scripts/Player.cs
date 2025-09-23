@@ -1,3 +1,6 @@
+using System;
+using System.ComponentModel;
+using System.Reflection;
 using System.Reflection.Metadata;
 using Godot;
 
@@ -27,6 +30,8 @@ public partial class Player : CharacterBody2D
     private Area2D _weaponArea2d;
     private Sprite2D _weaponSprite;
     private Timer _weaponTimer;
+    private bool _isAttacking;
+    private AnimationPlayer _animationPlayer;
 
     public override void _Ready()
     {
@@ -46,6 +51,7 @@ public partial class Player : CharacterBody2D
         _weaponSprite = GetNode<Sprite2D>("WeaponSprite");
         _weaponTimer = GetNode<Timer>("WeaponSprite/WeaponTimer");
         _weaponTimer.Timeout += HideWeapon;
+        _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
     }
     
     private void PlayerHitByGameObject(Node2D body)
@@ -105,6 +111,7 @@ public partial class Player : CharacterBody2D
 
     private void MovePlayer()
     {
+        if(_isAttacking) return;
         var moveVector = Input.GetVector("move_left", "move_right", "move_up", "move_down");
         Velocity = moveVector * Speed;
         if (Velocity.X > 0)
@@ -151,6 +158,7 @@ public partial class Player : CharacterBody2D
     
     private void HideWeapon()
     {
+        _isAttacking = false;
         ActivateWeapon(false);
     }
     private void EnemyEnteredWeaponArea2d(Node2D body)
@@ -164,15 +172,108 @@ public partial class Player : CharacterBody2D
         enemy.Destroy();
     }
     
-    public void Attack()
+    private void Attack()
     {
         ActivateWeapon(true);
         _weaponTimer.Start();
+        
+        var playerAnimation = _animatedSprite.Animation;
+        _isAttacking = true;
+        Velocity = Vector2.Zero;
+        switch (playerAnimation)
+        {
+            case "move_down":
+                _animatedSprite.Play(MovePositions.MoveDown.GetDescription());
+                _animationPlayer.Play(AttackPositions.AttackDown.GetDescription());
+                break;
+            case "move_up":
+                _animatedSprite.Play(MovePositions.MoveUp.GetDescription());
+                _animationPlayer.Play(AttackPositions.AttackUp.GetDescription());
+                break;
+            case "move_left":
+                _animatedSprite.Play(MovePositions.MoveLeft.GetDescription());
+                _animationPlayer.Play(AttackPositions.AttackLeft.GetDescription());
+                break;
+            case "move_right":
+                _animatedSprite.Play(MovePositions.MoveRight.GetDescription());
+                _animationPlayer.Play(AttackPositions.AttackRight.GetDescription());
+                break;
+            default:
+                break;
+            
+        }
     }
 
     private void ActivateWeapon(bool visible)
     {
         _weaponSprite.Visible = visible;
         _weaponArea2d.Monitoring = visible;
+        
+        if(visible) return;
+        var playerAnimation = _animatedSprite.Animation;
+        switch (playerAnimation)
+        {
+            case "attack_down":
+                _animatedSprite.Play(MovePositions.MoveDown.GetDescription());
+                break;
+            case "attack_up":
+                _animatedSprite.Play(MovePositions.MoveUp.GetDescription());
+                break;
+            case "attack_left":
+                _animatedSprite.Play(MovePositions.MoveLeft.GetDescription());
+                break;
+            case "attack_right":
+                _animatedSprite.Play(MovePositions.MoveRight.GetDescription());
+                break;
+            default:
+                break;
+            
+        }
+    }
+}
+
+public enum AttackPositions
+{
+    [Description("attack_up")]
+    AttackUp,
+    [Description("attack_down")]
+    AttackDown,
+    [Description("attack_left")]
+    AttackLeft,
+    [Description("attack_right")]
+    AttackRight,
+    
+}
+
+public enum MovePositions
+{
+    [Description("move_up")]
+    MoveUp,
+    [Description("move_down")]
+    MoveDown,
+    [Description("move_left")]
+    MoveLeft,
+    [Description("move_right")]
+    MoveRight,
+    
+}
+public static class EnumExtensions
+{
+    public static string GetDescription(this Enum value)
+    {
+        FieldInfo field = value.GetType().GetField(value.ToString());
+
+        if (field != null)
+        {
+            var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(
+                field, typeof(DescriptionAttribute));
+
+            if (attribute != null)
+            {
+                return attribute.Description;
+            }
+        }
+
+        return value.ToString(); // fallback if no description
     }
 }
