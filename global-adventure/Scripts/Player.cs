@@ -5,6 +5,12 @@ namespace GlobalAdventure.Scripts;
 
 public partial class Player : CharacterBody2D
 {
+    [Export] 
+    public int Health = 100;
+    [Export] 
+    public int PushStrength = 200;
+    [Export] public int Speed = 100;
+    
     private AnimatedSprite2D _animatedSprite;
     private float _damage = 7.5f;
     private string _firstName = "Paul";
@@ -18,11 +24,9 @@ public partial class Player : CharacterBody2D
     private SceneManager _sceneManager;
     private Area2D _playerHitBox;
     private AnimatedSprite2D _playerHealthIndicator;
-    [Export] 
-    public int Health = 100;
-    [Export] 
-    public int PushStrength = 200;
-    [Export] public int Speed = 100;
+    private Area2D _weaponArea2d;
+    private Sprite2D _weaponSprite;
+    private Timer _weaponTimer;
 
     public override void _Ready()
     {
@@ -37,8 +41,13 @@ public partial class Player : CharacterBody2D
         _playerHitBox.BodyEntered += PlayerHitByGameObject;
         _playerHealthIndicator = GetNode<AnimatedSprite2D>("%PlayerHealthIndicator");
         _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
+        _weaponArea2d = GetNode<Area2D>("WeaponSprite/WeaponArea2D");
+        _weaponArea2d.BodyEntered += EnemyEnteredWeaponArea2d;
+        _weaponSprite = GetNode<Sprite2D>("WeaponSprite");
+        _weaponTimer = GetNode<Timer>("WeaponSprite/WeaponTimer");
+        _weaponTimer.Timeout += HideWeapon;
     }
-
+    
     private void PlayerHitByGameObject(Node2D body)
     {
         if (body is not SlimeEnemy) return;
@@ -122,6 +131,11 @@ public partial class Player : CharacterBody2D
         {
             _animatedSprite.Stop();
         }
+
+        if (Input.IsActionJustPressed("interact"))
+        {
+            Attack();
+        }
     }
 
     private void HandlePlayerCollisionsWithPushableObjects()
@@ -133,5 +147,32 @@ public partial class Player : CharacterBody2D
 
         var normal = collision.GetNormal();
         rigidBodyNode.ApplyCentralForce(-normal * PushStrength);
+    }
+    
+    private void HideWeapon()
+    {
+        ActivateWeapon(false);
+    }
+    private void EnemyEnteredWeaponArea2d(Node2D body)
+    {
+        if(body is not SlimeEnemy enemy) return;
+        HandleEnemyHitByWeapon(enemy);
+    }
+
+    private void HandleEnemyHitByWeapon(SlimeEnemy enemy)
+    {
+        enemy.Destroy();
+    }
+    
+    public void Attack()
+    {
+        ActivateWeapon(true);
+        _weaponTimer.Start();
+    }
+
+    private void ActivateWeapon(bool visible)
+    {
+        _weaponSprite.Visible = visible;
+        _weaponArea2d.Monitoring = visible;
     }
 }
