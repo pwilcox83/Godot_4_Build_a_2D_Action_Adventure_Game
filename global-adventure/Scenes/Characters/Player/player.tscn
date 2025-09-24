@@ -1,8 +1,9 @@
-[gd_scene load_steps=44 format=3 uid="uid://cltk85i5pi00s"]
+[gd_scene load_steps=46 format=3 uid="uid://cltk85i5pi00s"]
 
 [ext_resource type="Script" uid="uid://e5w83rgw18d7" path="res://Scripts/Player.cs" id="1_lyjr2"]
 [ext_resource type="Texture2D" uid="uid://b254r7iohmbpr" path="res://Assets/Actor/Characters/Caveman/SeparateAnim/Attack.png" id="2_fu1fx"]
 [ext_resource type="Texture2D" uid="uid://df2gtqs5q2ukr" path="res://Assets/Actor/Characters/Caveman/SeparateAnim/Walk.png" id="2_lyjr2"]
+[ext_resource type="Texture2D" uid="uid://ctyag8ahapjav" path="res://Assets/Actor/Characters/Caveman/SpriteSheet.png" id="3_dxcao"]
 [ext_resource type="Texture2D" uid="uid://ci00lk1pappbp" path="res://Assets/Items/Scroll/ScrollEmpty.png" id="3_siygm"]
 [ext_resource type="Texture2D" uid="uid://bhmiolrycha72" path="res://Assets/Ui/LifeReceptacle/heart_2.png" id="4_qqvsf"]
 [ext_resource type="Texture2D" uid="uid://coowmyjc0stby" path="res://Assets/Items/Weapons/Club/Sprite.png" id="5_apx8m"]
@@ -22,6 +23,10 @@ region = Rect2(48, 0, 16, 16)
 [sub_resource type="AtlasTexture" id="AtlasTexture_23420"]
 atlas = ExtResource("2_fu1fx")
 region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roksr"]
+atlas = ExtResource("3_dxcao")
+region = Rect2(0, 96, 16, 16)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_aencf"]
 atlas = ExtResource("2_lyjr2")
@@ -119,6 +124,14 @@ animations = [{
 }],
 "loop": true,
 "name": &"attack_up",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roksr")
+}],
+"loop": true,
+"name": &"death",
 "speed": 5.0
 }, {
 "frames": [{
@@ -242,34 +255,6 @@ radius = 3.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_apx8m"]
 size = Vector2(7, 15)
 
-[sub_resource type="Animation" id="Animation_fu1fx"]
-resource_name = "attack_up"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("WeaponSprite:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [-1.4835298641951802, 1.4835298641951802]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("WeaponSprite:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(-2, -9)]
-}
-
 [sub_resource type="Animation" id="Animation_dxcao"]
 length = 0.001
 tracks/0/type = "value"
@@ -295,34 +280,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(-2, -9)]
-}
-
-[sub_resource type="Animation" id="Animation_1mdwi"]
-resource_name = "attack_right"
-length = 0.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("WeaponSprite:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.08726646, 3.0543263]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("WeaponSprite:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(5, 3)]
 }
 
 [sub_resource type="Animation" id="Animation_8gg06"]
@@ -381,6 +338,62 @@ tracks/1/keys = {
 "values": [Vector2(-5, 4)]
 }
 
+[sub_resource type="Animation" id="Animation_1mdwi"]
+resource_name = "attack_right"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponSprite:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.08726646, 3.0543263]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(5, 3)]
+}
+
+[sub_resource type="Animation" id="Animation_fu1fx"]
+resource_name = "attack_up"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponSprite:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-1.4835298641951802, 1.4835298641951802]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WeaponSprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(-2, -9)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_8gg06"]
 _data = {
 &"RESET": SubResource("Animation_dxcao"),
@@ -397,7 +410,7 @@ script = ExtResource("1_lyjr2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_plevq")
-animation = &"attack_left"
+animation = &"death"
 autoplay = "move_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -482,3 +495,7 @@ one_shot = true
 libraries = {
 &"": SubResource("AnimationLibrary_8gg06")
 }
+
+[node name="DeathTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true

@@ -12,91 +12,48 @@ public partial class Player : CharacterBody2D
     public int Health = 100;
     [Export] 
     public int PushStrength = 200;
-    [Export] public int Speed = 100;
+    [Export]
+    public int WeaponStrength = 200;
+    [Export] 
+    public int Speed = 100;
+    [Export] 
+    public int Acceleration = 10;
     
-    private AnimatedSprite2D _animatedSprite;
     private float _damage = 7.5f;
     private string _firstName = "Paul";
-    private Area2D _interactionArea;
-    private bool _isPlayerAlive;
-    private float _money = 15.5f;
-    private int _score = 200;
-    private string _userName = "Bob";
-    private int _scrollCount;
-    private Label _scrollCountLabel;
-    private SceneManager _sceneManager;
-    private Area2D _playerHitBox;
-    private AnimatedSprite2D _playerHealthIndicator;
-    private Area2D _weaponArea2d;
-    private Sprite2D _weaponSprite;
-    private Timer _weaponTimer;
-    private bool _isAttacking;
-    private AnimationPlayer _animationPlayer;
 
+    private AnimatedSprite2D _animatedSprite;
+    private AnimationPlayer _animationPlayer;
+    private AnimatedSprite2D _playerHealthIndicator;
+    
+    private Area2D _interactionArea;
+    private Area2D _playerHitBox;
+    private Area2D _weaponArea2d;
+    
+    private Label _scrollCountLabel;
+    
+    private SceneManager _sceneManager;
+    
+    private Sprite2D _weaponSprite;
+    
+    private Timer _weaponTimer;
+    private Timer _deathTimer;
+    
+    private bool _isPlayerAlive = true;
+    private bool _isAttacking;
+    
+    private int _scrollCount;
+    
     public override void _Ready()
     {
         _sceneManager =  GetNode<SceneManager>("/root/SceneManager");
-        _animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-        _interactionArea = GetNode<Area2D>("InteractionArea");
-        _interactionArea.BodyEntered += InteractionAreaEntered;
-        _interactionArea.BodyExited += InteractionAreaExited;
-        _scrollCountLabel = GetNode<Label>("%TreasureLabel");
-        _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
-        _playerHitBox = GetNode<Area2D>("HitBoxArea2d");
-        _playerHitBox.BodyEntered += PlayerHitByGameObject;
-        _playerHealthIndicator = GetNode<AnimatedSprite2D>("%PlayerHealthIndicator");
-        _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
-        _weaponArea2d = GetNode<Area2D>("WeaponSprite/WeaponArea2D");
-        _weaponArea2d.BodyEntered += EnemyEnteredWeaponArea2d;
+        SetupAnimationInstances();
+        SetupArea2ds();
+        SetupUi();
+        SetupTimers();
         _weaponSprite = GetNode<Sprite2D>("WeaponSprite");
-        _weaponTimer = GetNode<Timer>("WeaponSprite/WeaponTimer");
-        _weaponTimer.Timeout += HideWeapon;
-        _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
     }
     
-    private void PlayerHitByGameObject(Node2D body)
-    {
-        if (body is not SlimeEnemy) return;
-        _sceneManager.PlayerHealth--;
-        _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
-        if (_sceneManager.PlayerHealth >= 0) return;
-        CallDeferred(MethodName.Die);
-    }
-    
-    private void Die()
-    {
-        _sceneManager.PlayerHealth = 3;
-        GetTree().ReloadCurrentScene();
-    }
-
-    private void InteractionAreaEntered(Node2D body)
-    {
-        InteractWithGameObject(body, true);
-    }
-    
-    private void InteractionAreaExited(Node2D body)
-    {
-        InteractWithGameObject(body, false);
-    }
-
-    private static void InteractWithGameObject(Node2D body, bool active)
-    {
-        switch (body)
-        {
-            case Npc npc when npc.IsInGroup("interactable"):
-                npc.IsInteractable = active;
-                break;
-            case Switch gameSwitch when gameSwitch.IsInGroup("interactable"):
-                gameSwitch.IsInteractable = active;
-                break;
-            case TreasureChest tressureChest when tressureChest.IsInGroup("interactable"):
-                tressureChest.IsInteractable = active;
-                break;
-            default:
-                break;
-        }
-    }
-
     public override void _Process(double delta)
     {
         _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
@@ -104,16 +61,18 @@ public partial class Player : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (!_isPlayerAlive) return;
         MovePlayer();
         HandlePlayerCollisionsWithPushableObjects();
         MoveAndSlide();
     }
-
+    
     private void MovePlayer()
     {
         if(_isAttacking) return;
         var moveVector = Input.GetVector("move_left", "move_right", "move_up", "move_down");
-        Velocity = moveVector * Speed;
+        Velocity = Velocity.MoveToward(moveVector.Normalized() * Speed, Acceleration);
+
         if (Velocity.X > 0)
         {
             _animatedSprite.Play("move_right");
@@ -144,16 +103,23 @@ public partial class Player : CharacterBody2D
             Attack();
         }
     }
-
-    private void HandlePlayerCollisionsWithPushableObjects()
+    
+     private static void InteractWithGameObject(Node2D body, bool active)
     {
-        var collision = GetLastSlideCollision();
-
-        if (collision?.GetCollider() is not Node node || !node.IsInGroup("pushable")) return;
-        if (node is not RigidBody2D rigidBodyNode) return;
-
-        var normal = collision.GetNormal();
-        rigidBodyNode.ApplyCentralForce(-normal * PushStrength);
+        switch (body)
+        {
+            case Npc npc when npc.IsInGroup("interactable"):
+                npc.IsInteractable = active;
+                break;
+            case Switch gameSwitch when gameSwitch.IsInGroup("interactable"):
+                gameSwitch.IsInteractable = active;
+                break;
+            case TreasureChest tressureChest when tressureChest.IsInGroup("interactable"):
+                tressureChest.IsInteractable = active;
+                break;
+            default:
+                break;
+        }
     }
     
     private void HideWeapon()
@@ -164,16 +130,12 @@ public partial class Player : CharacterBody2D
     private void EnemyEnteredWeaponArea2d(Node2D body)
     {
         if(body is not SlimeEnemy enemy) return;
-        HandleEnemyHitByWeapon(enemy);
-    }
-
-    private void HandleEnemyHitByWeapon(SlimeEnemy enemy)
-    {
-        enemy.Destroy();
+        enemy.Hit(GlobalPosition, WeaponStrength);
     }
     
     private void Attack()
     {
+        if(!_weaponTimer.IsStopped()) return;
         ActivateWeapon(true);
         _weaponTimer.Start();
         
@@ -183,20 +145,20 @@ public partial class Player : CharacterBody2D
         switch (playerAnimation)
         {
             case "move_down":
-                _animatedSprite.Play(MovePositions.MoveDown.GetDescription());
-                _animationPlayer.Play(AttackPositions.AttackDown.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Down));
+                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Down));
                 break;
             case "move_up":
-                _animatedSprite.Play(MovePositions.MoveUp.GetDescription());
-                _animationPlayer.Play(AttackPositions.AttackUp.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Up));
+                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Up));
                 break;
             case "move_left":
-                _animatedSprite.Play(MovePositions.MoveLeft.GetDescription());
-                _animationPlayer.Play(AttackPositions.AttackLeft.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Left));
+                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Left));
                 break;
             case "move_right":
-                _animatedSprite.Play(MovePositions.MoveRight.GetDescription());
-                _animationPlayer.Play(AttackPositions.AttackRight.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Right));
+                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Right));
                 break;
             default:
                 break;
@@ -214,66 +176,93 @@ public partial class Player : CharacterBody2D
         switch (playerAnimation)
         {
             case "attack_down":
-                _animatedSprite.Play(MovePositions.MoveDown.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Down));
                 break;
             case "attack_up":
-                _animatedSprite.Play(MovePositions.MoveUp.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Up));
                 break;
             case "attack_left":
-                _animatedSprite.Play(MovePositions.MoveLeft.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Left));
                 break;
             case "attack_right":
-                _animatedSprite.Play(MovePositions.MoveRight.GetDescription());
+                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Right));
                 break;
-            default:
-                break;
-            
         }
     }
-}
-
-public enum AttackPositions
-{
-    [Description("attack_up")]
-    AttackUp,
-    [Description("attack_down")]
-    AttackDown,
-    [Description("attack_left")]
-    AttackLeft,
-    [Description("attack_right")]
-    AttackRight,
     
-}
-
-public enum MovePositions
-{
-    [Description("move_up")]
-    MoveUp,
-    [Description("move_down")]
-    MoveDown,
-    [Description("move_left")]
-    MoveLeft,
-    [Description("move_right")]
-    MoveRight,
-    
-}
-public static class EnumExtensions
-{
-    public static string GetDescription(this Enum value)
+    private void HandlePlayerCollisionsWithPushableObjects()
     {
-        FieldInfo field = value.GetType().GetField(value.ToString());
+        var collision = GetLastSlideCollision();
 
-        if (field != null)
-        {
-            var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(
-                field, typeof(DescriptionAttribute));
+        if (collision?.GetCollider() is not Node node || !node.IsInGroup("pushable")) return;
+        if (node is not RigidBody2D rigidBodyNode) return;
 
-            if (attribute != null)
-            {
-                return attribute.Description;
-            }
-        }
+        var normal = collision.GetNormal();
+        rigidBodyNode.ApplyCentralForce(-normal * PushStrength);
+    }
 
-        return value.ToString(); // fallback if no description
+    private void PlayerHitByGameObject(Node2D body)
+    {
+        if (body is not SlimeEnemy slimeEnemy) return;
+        _sceneManager.PlayerHealth--;
+        _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
+        
+        var distanceToPlayer = GlobalPosition - slimeEnemy.GlobalPosition;
+        var knockBackDirection = distanceToPlayer.Normalized();
+        var knockBackForce = 250;
+        Velocity += knockBackDirection * knockBackForce;
+        GD.Print($"Player health: {_sceneManager.PlayerHealth}");
+        if (_sceneManager.PlayerHealth >= 0) return;
+        CallDeferred(MethodName.Die);
+    }
+    
+    private void Die()
+    {
+        _isPlayerAlive = false;
+        _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Death, Direction.NotRequired));
+        if(!_deathTimer.IsStopped()) return;
+        _deathTimer.Start();
+    }
+
+   
+    
+    private void SetupUi()
+    {
+        _scrollCountLabel = GetNode<Label>("%TreasureLabel");
+        _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
+        _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
+    }
+
+    private void SetupTimers()
+    {
+        _weaponTimer = GetNode<Timer>("WeaponSprite/WeaponTimer");
+        _weaponTimer.Timeout += HideWeapon;
+        
+        _deathTimer = GetNode<Timer>("DeathTimer");
+        _deathTimer.Timeout += ReloadScene;
+    }
+    
+    private void ReloadScene()
+    {
+        _sceneManager.PlayerHealth = 3;
+        GetTree().ReloadCurrentScene();
+    }
+
+    private void SetupArea2ds()
+    {
+        _interactionArea = GetNode<Area2D>("InteractionArea");
+        _interactionArea.BodyEntered += body => InteractWithGameObject(body, true);
+        _interactionArea.BodyExited += body => InteractWithGameObject(body, false);;
+        _playerHitBox = GetNode<Area2D>("HitBoxArea2d");
+        _playerHitBox.BodyEntered += PlayerHitByGameObject;
+        _weaponArea2d = GetNode<Area2D>("WeaponSprite/WeaponArea2D");
+        _weaponArea2d.BodyEntered += EnemyEnteredWeaponArea2d;
+    }
+
+    private void SetupAnimationInstances()
+    {
+        _animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        _animationPlayer = GetNode<AnimationPlayer>("AnimationPlayer");
+        _playerHealthIndicator = GetNode<AnimatedSprite2D>("%PlayerHealthIndicator");
     }
 }

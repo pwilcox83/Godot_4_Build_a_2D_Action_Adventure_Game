@@ -910,7 +910,7 @@ text = "Kitty"
 label_settings = SubResource("LabelSettings_638s3")
 
 [node name="SlimeEnemy" parent="ObstacleLayer" instance=ExtResource("14_3fe81")]
-position = Vector2(65, 98)
+position = Vector2(-33, 97)
 
 [node name="Block" parent="." groups=["pushable"] instance=ExtResource("6_vnxuf")]
 position = Vector2(153, 63)
