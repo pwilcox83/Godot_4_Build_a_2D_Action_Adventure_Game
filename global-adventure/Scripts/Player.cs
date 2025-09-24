@@ -1,59 +1,56 @@
-using System;
-using System.ComponentModel;
-using System.Reflection;
-using System.Reflection.Metadata;
+using System.Threading.Tasks;
 using Godot;
 
 namespace GlobalAdventure.Scripts;
 
 public partial class Player : CharacterBody2D
 {
-    [Export] 
-    public int Health = 100;
-    [Export] 
-    public int PushStrength = 200;
-    [Export]
-    public int WeaponStrength = 200;
-    [Export] 
-    public int Speed = 100;
-    [Export] 
-    public int Acceleration = 10;
-    
-    private float _damage = 7.5f;
-    private string _firstName = "Paul";
+    [Export] public int Acceleration = 10;
 
+    [Export] public int Health = 100;
+
+    [Export] public int PushStrength = 200;
+
+    [Export] public int Speed = 100;
+
+    [Export] public int WeaponStrength = 200;
     private AnimatedSprite2D _animatedSprite;
     private AnimationPlayer _animationPlayer;
-    private AnimatedSprite2D _playerHealthIndicator;
-    
-    private Area2D _interactionArea;
-    private Area2D _playerHitBox;
-    private Area2D _weaponArea2d;
-    
-    private Label _scrollCountLabel;
-    
-    private SceneManager _sceneManager;
-    
-    private Sprite2D _weaponSprite;
-    
-    private Timer _weaponTimer;
+
+    private float _damage = 7.5f;
     private Timer _deathTimer;
-    
-    private bool _isPlayerAlive = true;
+    private Direction _direction = Direction.Down;
+    private Area2D _interactionArea;
     private bool _isAttacking;
+    private bool _canInteract;
+    private bool _isPlayerAlive = true;
+    private bool _isPushedBacked;
     
+    private AnimatedSprite2D _playerHealthIndicator;
+    private Area2D _playerHitBox;
+
+    private SceneManager _sceneManager;
+
     private int _scrollCount;
+
+    private Label _scrollCountLabel;
+    private Area2D _weaponArea2d;
+
+    private Sprite2D _weaponSprite;
+
+    private Timer _weaponTimer;
+    
     
     public override void _Ready()
     {
-        _sceneManager =  GetNode<SceneManager>("/root/SceneManager");
+        _sceneManager = GetNode<SceneManager>("/root/SceneManager");
         SetupAnimationInstances();
         SetupArea2ds();
         SetupUi();
         SetupTimers();
         _weaponSprite = GetNode<Sprite2D>("WeaponSprite");
     }
-    
+
     public override void _Process(double delta)
     {
         _scrollCountLabel.Text = _sceneManager.OpenedChests.Count.ToString();
@@ -62,50 +59,62 @@ public partial class Player : CharacterBody2D
     public override void _PhysicsProcess(double delta)
     {
         if (!_isPlayerAlive) return;
+        DetermineDirection();
         MovePlayer();
         HandlePlayerCollisionsWithPushableObjects();
         MoveAndSlide();
     }
-    
+
+    private void DetermineDirection()
+    {
+        if(Input.IsActionJustPressed("move_up")) _direction = Direction.Up;
+        else if(Input.IsActionJustPressed("move_down")) _direction = Direction.Down;
+        else if(Input.IsActionJustPressed("move_left")) _direction = Direction.Left;
+        else if(Input.IsActionJustPressed("move_right")) _direction = Direction.Right;
+    }
+
     private void MovePlayer()
     {
-        if(_isAttacking) return;
+        if (_isAttacking) return;
         var moveVector = Input.GetVector("move_left", "move_right", "move_up", "move_down");
         Velocity = Velocity.MoveToward(moveVector.Normalized() * Speed, Acceleration);
-
+        
         if (Velocity.X > 0)
         {
-            _animatedSprite.Play("move_right");
             _interactionArea.Position = new Vector2(5, 2);
         }
         else if (Velocity.X < 0)
         {
-            _animatedSprite.Play("move_left");
             _interactionArea.Position = new Vector2(-5, 2);
         }
         else if (Velocity.Y > 0)
         {
-            _animatedSprite.Play("move_down");
             _interactionArea.Position = new Vector2(0, 8);
         }
         else if (Velocity.Y < 0)
         {
-            _animatedSprite.Play("move_up");
             _interactionArea.Position = new Vector2(0, -4);
+        }
+
+        if (Velocity == Vector2.Zero)
+        {
+            _animatedSprite.Stop();
+
         }
         else
         {
-            _animatedSprite.Stop();
+            _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, _direction));
         }
-
-        if (Input.IsActionJustPressed("interact"))
+        
+        if (Input.IsActionJustPressed("interact") && !_canInteract)
         {
             Attack();
         }
     }
-    
-     private static void InteractWithGameObject(Node2D body, bool active)
+
+    private void InteractWithGameObject(Node2D body, bool active)
     {
+        _canInteract = active;
         switch (body)
         {
             case Npc npc when npc.IsInGroup("interactable"):
@@ -121,75 +130,40 @@ public partial class Player : CharacterBody2D
                 break;
         }
     }
-    
+
     private void HideWeapon()
     {
         _isAttacking = false;
         ActivateWeapon(false);
     }
+
     private void EnemyEnteredWeaponArea2d(Node2D body)
     {
-        if(body is not SlimeEnemy enemy) return;
+        if (body is not SlimeEnemy enemy) return;
         enemy.Hit(GlobalPosition, WeaponStrength);
     }
-    
+
     private void Attack()
     {
-        if(!_weaponTimer.IsStopped()) return;
+        if (!_weaponTimer.IsStopped()) return;
         ActivateWeapon(true);
         _weaponTimer.Start();
-        
-        var playerAnimation = _animatedSprite.Animation;
+
         _isAttacking = true;
         Velocity = Vector2.Zero;
-        switch (playerAnimation)
-        {
-            case "move_down":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Down));
-                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Down));
-                break;
-            case "move_up":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Up));
-                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Up));
-                break;
-            case "move_left":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Left));
-                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Left));
-                break;
-            case "move_right":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Right));
-                _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, Direction.Right));
-                break;
-            default:
-                break;
-            
-        }
+        _animationPlayer.Play(CommonAnimationDictionary.Get(Action.Attack, _direction));
+        _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, _direction));
     }
 
     private void ActivateWeapon(bool visible)
     {
         _weaponSprite.Visible = visible;
         _weaponArea2d.Monitoring = visible;
-        
-        if(visible) return;
-        var playerAnimation = _animatedSprite.Animation;
-        switch (playerAnimation)
-        {
-            case "attack_down":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Down));
-                break;
-            case "attack_up":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Up));
-                break;
-            case "attack_left":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Left));
-                break;
-            case "attack_right":
-                _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, Direction.Right));
-                break;
-        }
+
+        if (visible) return;
+        _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Move, _direction));
     }
-    
+
     private void HandlePlayerCollisionsWithPushableObjects()
     {
         var collision = GetLastSlideCollision();
@@ -201,31 +175,34 @@ public partial class Player : CharacterBody2D
         rigidBodyNode.ApplyCentralForce(-normal * PushStrength);
     }
 
-    private void PlayerHitByGameObject(Node2D body)
+    private async Task PlayerHitByGameObject(Node2D body)
     {
         if (body is not SlimeEnemy slimeEnemy) return;
+        _isPushedBacked = true;
         _sceneManager.PlayerHealth--;
+        var flashWhiteColor = new Color(50, 50, 50);
+        var _ogColor = new Color(1, 1, 1);
+        Modulate = flashWhiteColor;
+        await ToSignal(GetTree().CreateTimer(0.2), "timeout");
         _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
-        
+        Modulate = _ogColor;
         var distanceToPlayer = GlobalPosition - slimeEnemy.GlobalPosition;
         var knockBackDirection = distanceToPlayer.Normalized();
         var knockBackForce = 250;
         Velocity += knockBackDirection * knockBackForce;
-        GD.Print($"Player health: {_sceneManager.PlayerHealth}");
         if (_sceneManager.PlayerHealth >= 0) return;
         CallDeferred(MethodName.Die);
     }
     
+
     private void Die()
     {
         _isPlayerAlive = false;
         _animatedSprite.Play(CommonAnimationDictionary.Get(Action.Death, Direction.NotRequired));
-        if(!_deathTimer.IsStopped()) return;
+        if (!_deathTimer.IsStopped()) return;
         _deathTimer.Start();
     }
 
-   
-    
     private void SetupUi()
     {
         _scrollCountLabel = GetNode<Label>("%TreasureLabel");
@@ -237,11 +214,11 @@ public partial class Player : CharacterBody2D
     {
         _weaponTimer = GetNode<Timer>("WeaponSprite/WeaponTimer");
         _weaponTimer.Timeout += HideWeapon;
-        
+
         _deathTimer = GetNode<Timer>("DeathTimer");
         _deathTimer.Timeout += ReloadScene;
     }
-    
+
     private void ReloadScene()
     {
         _sceneManager.PlayerHealth = 3;
@@ -252,9 +229,10 @@ public partial class Player : CharacterBody2D
     {
         _interactionArea = GetNode<Area2D>("InteractionArea");
         _interactionArea.BodyEntered += body => InteractWithGameObject(body, true);
-        _interactionArea.BodyExited += body => InteractWithGameObject(body, false);;
+        _interactionArea.BodyExited += body => InteractWithGameObject(body, false);
+        ;
         _playerHitBox = GetNode<Area2D>("HitBoxArea2d");
-        _playerHitBox.BodyEntered += PlayerHitByGameObject;
+        _playerHitBox.BodyEntered += (body) => PlayerHitByGameObject(body);
         _weaponArea2d = GetNode<Area2D>("WeaponSprite/WeaponArea2D");
         _weaponArea2d.BodyEntered += EnemyEnteredWeaponArea2d;
     }

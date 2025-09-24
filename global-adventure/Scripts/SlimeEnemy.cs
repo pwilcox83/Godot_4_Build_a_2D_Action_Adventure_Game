@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Godot;
 
 namespace GlobalAdventure.Scripts;
@@ -69,11 +70,18 @@ public partial class SlimeEnemy : CharacterBody2D
         CallDeferred(Node.MethodName.QueueFree);
     }
 
-    public void Hit(Vector2 positionHitFrom, int strength)
+    public async Task Hit(Vector2 positionHitFrom, int strength)
     {
         var distanceToEnemy = GlobalPosition - positionHitFrom;
         var knockBackDirection = distanceToEnemy.Normalized();
         Velocity += knockBackDirection * strength;
+        var hitColor = new Color(50, 0, 0);
+        var ogColor = new Color(1, 1, 1);
+        Modulate = hitColor;
+        await ToSignal(GetTree().CreateTimer(0.2), "timeout");
+        if(!IsInstanceValid(this)) return;
+        Modulate = ogColor;
+        
         Health--;
         if (Health <= 0)
         {

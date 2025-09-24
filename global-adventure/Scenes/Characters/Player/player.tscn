@@ -410,7 +410,7 @@ script = ExtResource("1_lyjr2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_plevq")
-animation = &"death"
+animation = &"attack_down"
 autoplay = "move_down"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -499,3 +499,5 @@ libraries = {
 [node name="DeathTimer" type="Timer" parent="."]
 wait_time = 1.5
 one_shot = true
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
