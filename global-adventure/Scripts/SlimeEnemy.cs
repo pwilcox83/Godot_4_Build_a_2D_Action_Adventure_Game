@@ -14,15 +14,23 @@ public partial class SlimeEnemy : CharacterBody2D
     private Area2D _playerDetectionArea;
     private Player _playerTarget;
     private AnimatedSprite2D _animatedSprite;
+    private AudioStreamPlayer2D _damageSFX;
+    private GpuParticles2D _deathFX;
+    private CollisionShape2D _hitBox;
+    
     public override void _Ready()
     {
         _playerDetectionArea = GetNode<Area2D>("PlayerDetectionArea");
         _playerDetectionArea.BodyEntered += PlayerInPlayerDetectionArea;
         _animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        _damageSFX = GetNode<AudioStreamPlayer2D>("DamageSFX");
+        _deathFX = GetNode<GpuParticles2D>("DeathFX");
+        _hitBox = GetNode<CollisionShape2D>("CollisionShape2D");
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        if(Health <= 0) return;
         ChasePlayer();
         Animate();
         MoveAndSlide();
@@ -65,9 +73,18 @@ public partial class SlimeEnemy : CharacterBody2D
         _playerTarget = player;
     }
 
-    public void Destroy()
+    public async Task Destroy()
     {
+        _deathFX.Emitting = true;
+        CallDeferred(nameof(Disable));
+        await ToSignal(GetTree().CreateTimer(1), "timeout");
         CallDeferred(Node.MethodName.QueueFree);
+    }
+
+    private void Disable()
+    {
+        _animatedSprite.Visible = false;
+        _hitBox.Disabled = true;
     }
 
     public async Task Hit(Vector2 positionHitFrom, int strength)
@@ -78,13 +95,14 @@ public partial class SlimeEnemy : CharacterBody2D
         var hitColor = new Color(50, 0, 0);
         var ogColor = new Color(1, 1, 1);
         Modulate = hitColor;
+        _damageSFX.Play();
         await ToSignal(GetTree().CreateTimer(0.2), "timeout");
         if(!IsInstanceValid(this)) return;
         Modulate = ogColor;
         
         Health--;
         if (Health <= 0)
-        {
+        {        
             Destroy();
         }
     }

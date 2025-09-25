@@ -26,8 +26,12 @@ public partial class Player : CharacterBody2D
     private bool _isPlayerAlive = true;
     private bool _isPushedBacked;
     
-    private AnimatedSprite2D _playerHealthIndicator;
+    private AnimatedSprite2D _playerHealthIndicator; 
+    
     private Area2D _playerHitBox;
+    
+    private AudioStreamPlayer2D _damageSFX;
+    private AudioStreamPlayer2D _weaponSFX;
 
     private SceneManager _sceneManager;
 
@@ -39,8 +43,10 @@ public partial class Player : CharacterBody2D
     private Sprite2D _weaponSprite;
 
     private Timer _weaponTimer;
-    
-    
+    [Export]
+    public float KnockBackForce = 250;
+
+
     public override void _Ready()
     {
         _sceneManager = GetNode<SceneManager>("/root/SceneManager");
@@ -49,6 +55,8 @@ public partial class Player : CharacterBody2D
         SetupUi();
         SetupTimers();
         _weaponSprite = GetNode<Sprite2D>("WeaponSprite");
+        _damageSFX = GetNode<AudioStreamPlayer2D>("DamageSFX");
+        _weaponSFX = GetNode<AudioStreamPlayer2D>("WeaponSFX");
     }
 
     public override void _Process(double delta)
@@ -148,6 +156,7 @@ public partial class Player : CharacterBody2D
         if (!_weaponTimer.IsStopped()) return;
         ActivateWeapon(true);
         _weaponTimer.Start();
+        _weaponSFX.Play();
 
         _isAttacking = true;
         Velocity = Vector2.Zero;
@@ -180,21 +189,25 @@ public partial class Player : CharacterBody2D
         if (body is not SlimeEnemy slimeEnemy) return;
         _isPushedBacked = true;
         _sceneManager.PlayerHealth--;
+        var distanceToPlayer = GlobalPosition - slimeEnemy.GlobalPosition;
+        var knockBackDirection = distanceToPlayer.Normalized();
+        Velocity += knockBackDirection * KnockBackForce;
+        _damageSFX.Play();
+        await FlashColor();
+        if (_sceneManager.PlayerHealth >= 0) return;
+        CallDeferred(MethodName.Die);
+    }
+
+    private async Task FlashColor()
+    {
         var flashWhiteColor = new Color(50, 50, 50);
         var _ogColor = new Color(1, 1, 1);
         Modulate = flashWhiteColor;
         await ToSignal(GetTree().CreateTimer(0.2), "timeout");
         _playerHealthIndicator.Frame = _sceneManager.PlayerHealth;
         Modulate = _ogColor;
-        var distanceToPlayer = GlobalPosition - slimeEnemy.GlobalPosition;
-        var knockBackDirection = distanceToPlayer.Normalized();
-        var knockBackForce = 250;
-        Velocity += knockBackDirection * knockBackForce;
-        if (_sceneManager.PlayerHealth >= 0) return;
-        CallDeferred(MethodName.Die);
     }
     
-
     private void Die()
     {
         _isPlayerAlive = false;
@@ -230,9 +243,8 @@ public partial class Player : CharacterBody2D
         _interactionArea = GetNode<Area2D>("InteractionArea");
         _interactionArea.BodyEntered += body => InteractWithGameObject(body, true);
         _interactionArea.BodyExited += body => InteractWithGameObject(body, false);
-        ;
         _playerHitBox = GetNode<Area2D>("HitBoxArea2d");
-        _playerHitBox.BodyEntered += (body) => PlayerHitByGameObject(body);
+        _playerHitBox.BodyEntered += (body) => _ = PlayerHitByGameObject(body);
         _weaponArea2d = GetNode<Area2D>("WeaponSprite/WeaponArea2D");
         _weaponArea2d.BodyEntered += EnemyEnteredWeaponArea2d;
     }
